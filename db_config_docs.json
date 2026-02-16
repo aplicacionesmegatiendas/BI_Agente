@@ -1,0 +1,1332 @@
+[
+    {
+        "data_mart_name": "Data mart de Ventas",
+        "description": "Contiene información detallada sobre las ventas realizadas en la empresa, incluyendo datos de clientes, productos, fechas y montos de venta.",
+        "tables": [
+            {
+                "table_name": "D_Geografia",
+                "description": "Esta tabla almacena la información geográfica relacionada con los puntos de venta, incluyendo detalles sobre regiones, departamentos y ciudades. y cualquier otro tipo de segmentación geográfica relevante para el análisis de ventas. el usuario de forma natural solicita infromacion basada en nombres o descripciones",
+                "cols": [
+                    {
+                        "campo": "sk_geografia",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_regional",
+                        "tipo": "char",
+                        "tamano": 2,
+                        "descripcion": "codigo erp de la regional",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "regional",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion de la regional (bolivar, tlantico, magdalena)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_co",
+                        "tipo": "char",
+                        "tamano": 3,
+                        "descripcion": "codigo erp del centro de operación",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "co",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion del centro de operación",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "dane_dpto",
+                        "tipo": "char",
+                        "tamano": 2,
+                        "descripcion": "codigo erp del  departamento donde realizo la transaccion",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "departamento",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion departamento donde realizo la transaccion",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "dane_ciudad",
+                        "tipo": "char",
+                        "tamano": 3,
+                        "descripcion": "codigo erp de la ciudad donde se realizo la transaccion",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ciudad",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion de la ciudad donde se realizo la transaccion (cartagena)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "grupo_estrato",
+                        "tipo": "varchar",
+                        "tamano": 2000,
+                        "descripcion": "grupo de estrato (alto,medio,bajo)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha_apertura",
+                        "tipo": "datetime",
+                        "tamano": "",
+                        "descripcion": "fecha apertura aplica para punto de venta o centro de operacion",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "superficie_m2",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "total metros cuadrados del punto de venta o centro de operacion",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ind_prorraeo",
+                        "tipo": "smallint",
+                        "tamano": "",
+                        "descripcion": "Indica si para el centro de operacion algunos calculos se deben hacer con prorrateo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "desc_prorrateo",
+                        "tipo": "varchar",
+                        "tamano": "40",
+                        "descripcion": "nombre o descripcion de prorrateo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "grupo_tienda",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "Codigo de grupo A de centros de operaciones",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "grupo2_tienda",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo B de centros de operaciones ('009', '010', '011')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "grupo3_tienda",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo C de centros de operaciones ('009', '010', '011')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_co",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo tipo de centros de operación: 002 para tiendas, 021 para bodegas",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "cluster",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo  del clauster  por estrato al que pertenece la tienda (cluster generall, cluster alto ('022', '023'))",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "bodegas",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo centros de operaciones ( tiendas cartagena , tiendas barranquilla ('017', '018', '019'))",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "icat",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de  grupo tienda por estrato (icat cartagena, barranquilla ('031', '032', '033', '034'))",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "regional_ge",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo de tiendas por regional ( barranquilla, cartagena ('004', '005') )",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "bodegas_fruver",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de centros de operaciones fruver por regional (('006', '007', '008'))",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "gp_institucional",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo de institucionales (('012'))",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "corporativo",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "grupo de centros de operación corporativos (ej. 888,999,950 )",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "operación_logistica",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "operación_logistica",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "zonas",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo de grupo de tiendas por zona ('015', '016')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "generico",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo grupo de tinedas con rappi ('024', '99')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "ica_ctg",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "grupo de centros de operación icat cartagena ('027')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "rappi",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo grupo de tinedas con rappi ('028')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "co_fe",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo grupo co_fe ('029')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "canastilla",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "codigo grupo de tiendas con canasto ('050')",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                     {
+                        "campo": "prorrateo",
+                        "tipo": "char",
+                        "tamano": "3",
+                        "descripcion": "agrupacion para prorratego por region (se adiciono como una prueba para el modelo estado resultado al final se quedo con el ind_prorrateo )",
+                        "is_pk":false,
+                        "fk":""
+                    }   
+                   
+                ]
+            },
+              {
+                "table_name": "D_motivos",
+                "description": "Esta tabla almacena la información los motivos relacionados con el documento de ventas e inventario.",
+                "cols": [
+                    {
+                        "campo": "sk_motivo",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_concepto",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "codigo del concepto ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "concepto",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "describe los conceptos de (venta pos, ajustes de inventarios, tranferencias en tránsito)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "id_motivo",
+                        "tipo": "char",
+                        "tamano": 2,
+                        "descripcion": "codigo motivo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "motivo",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "describe la razon de ej:(entradas y salidas de mercancía, salida por ajuste en costo)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "naturaleza",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "codigo naturaleza (1:Docs POS,2:Docs standart)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "compañía (1:invercomer,7:megaaceites)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    
+                ]
+            },
+             {
+                "table_name": "D_Tipo_documento",
+                "description": "Esta tabla almacena los tipos de diomensiones de venta de la compañia",
+                "cols": [
+                    {
+                        "campo": "sk_tipo_documento",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_tipo_documento",
+                        "tipo": "varchar",
+                        "tamano": 3,
+                        "descripcion": "codigo de documento",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_documento",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripción del tipo de documento",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_familia_documento",
+                        "tipo": "char",
+                        "tamano": 2,
+                        "descripcion": "codigo de erp familia",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "familia_documento",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripción documento familia ej(inventario de mercancía, ventas)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
+            },
+             {
+                "table_name": "D_Item",
+                "description": "Esta tabla almacena el contedio de la maestra de items con sus criterios.",
+                "cols": [
+                    {
+                        "campo": "sk_item",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "compañía (1:invercomer,7:megaaceites )",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "item",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo erp del item",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "rowid_item",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "rowid item (codigo interno de la tabla de items en el erp)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "rowid_item_ext",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "rowid extension de item (código interno de la tabla de extensiones de ítems)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "descripcion_item",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion de item",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "referencia_item",
+                        "tipo": "char",
+                        "tamano": 50,
+                        "descripcion": "codigo de barras/referencía (un codigo de barras puede tener varias referencias)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ean",
+                        "tipo": "varchar",
+                        "tamano": 20,
+                        "descripcion": "codigo barra principal",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_subfamilia",
+                        "tipo": "char",
+                        "tamano": 4,
+                        "descripcion": "codigo subfamilia",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "subfamilia",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion subfamilia ej:(chonco, pasta larga spaghetti)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_familia",
+                        "tipo": "char",
+                        "tamano": 4,
+                        "descripcion": "codigo familia",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "familia",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion familia  ej:(pasta larga, tomate)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_categoria",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo categoria ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "categoria",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion categoria ej:(003:pastas alimenticias)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_seccion",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo seccion ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "seccion",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion seccion (viveres, verduras)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_uen",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo uen ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "uen",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion uen ej:(carnes, bebidas, fruver)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_procedencia",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo procedencia ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_marca",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo marca ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "marca",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion marca ej: (alpina, fritolay, sello rojo)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_proveedor",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo proveedor",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "proveedor",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion proveedor (nestle, bimbo)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_universo",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo universo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "universo",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion universo (ej. comercializado, suministro, materias prima)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_unidad_inventario",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo unidad de inventario",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_unidad_adicional",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo unidad adicional",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_unidad_empaque",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo unidad de empaque",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_unidad_orden",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo unidad de orden",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_tercero_proveedor",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo tercero proveedor",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_clasificacion_producto",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo clasificacion de producto",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "clasificacion_producto",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion de producto (nacional, regular, oferta)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_grupo_impositivo",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo de grupos impostivos (0001: horario grv, 0016: servicio de transporte publico nacional)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_estado_intem",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "identificador de estado activo (1/0)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "estado_intem",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion de estado (activo/inactivo)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_tipo_inventario",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo de tipo de inventario",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_inventario",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion tipo de inventario (canastilla megatiendas, suministro mantenimiento)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "iva_ventas",
+                        "tipo": "smallmoney",
+                        "tamano": null,
+                        "descripcion": "porcentaje del impuesto que tiene sobre el valor de la venta",
+                        "is_pk":false,
+                        "fk":""
+                    }, 
+                    {
+                        "campo": "fecha_creacion",
+                        "tipo": "varchar",
+                        "tamano": 30,
+                        "descripcion": "fecha creacion en el sistema del doct",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_grupo_uen",
+                        "tipo": "varchar",
+                        "tamano": 2,
+                        "descripcion": "codigo grupo uen ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "grupo_uen",
+                        "tipo": "varchar",
+                        "tamano": 20,
+                        "descripcion": "nombre o descripcion grupo uen (frescos, abarrotes)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_negociador",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo negociador",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "negociador",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion negociador",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_departamento",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo departamento",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "departamento",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion departamento del item(fresco/abarrotes)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_ranking",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "identificador rankin compañía",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ranking",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "ranking(m,a,b)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_item",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo tipo de item (null, inventario, kit, servicio)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_mundo",
+                        "tipo": "varchar",
+                        "tamano": 11,
+                        "descripcion": "codigo mundo consumo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "mundo_consumo",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion mundo consumo (almuerzo, desayunos moderno, cafeteria sac)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_caracteristicas",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo caracteristica",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "caracteristicas",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion caracteristica je:(0104:aliñar, pastas largas bolsa plastica, bebida alcoholicas botella)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_presentacion",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo presentacion",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "presentacion",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion presentacion (material empaque)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_um",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo unidad de medida",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "unidad_medida",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion unidad de medida ej(minilitro, gramo, und)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_ubicacion",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo ubicacion del item",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ubicacion",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "nombre o descripcion de la ubicacion del item ej(09:tienda general)",
+                        "is_pk":false,
+                        "fk":""
+                    }  
+                ]
+            },
+            {
+                "table_name": "D_clientes",
+                "description": "Esta tabla almacena las diomensiones del maestro clientes pos y terceros.",
+                "cols": [
+                    {
+                        "campo": "sk_cliente",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "compañía (1:invercomer,7:megaaceites )",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_cliente",
+                        "tipo": "varchar",
+                        "tamano": 25,
+                        "descripcion": "identificacion cliente",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "nit",
+                        "tipo": "varchar",
+                        "tamano": 25,
+                        "descripcion": "nit cliente",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "nombre",
+                        "tipo": "varchar",
+                        "tamano": 102,
+                        "descripcion": "nombre cliente",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha_nacimiento",
+                        "tipo": "datetime",
+                        "tamano": null,
+                        "descripcion": "fecha de nacimiento",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha_creacion",
+                        "tipo": "datetime",
+                        "tamano": null,
+                        "descripcion": "fecha creacion del documento",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "usuario_creacion",
+                        "tipo": "varchar",
+                        "tamano": 30,
+                        "descripcion": "la persona que crea al usuario",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "apellido1",
+                        "tipo": "varchar",
+                        "tamano": 50,
+                        "descripcion": "primer apellido cliente",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "apellido2",
+                        "tipo": "varchar",
+                        "tamano": 50,
+                        "descripcion": "segundo apellido cliente",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_documento",
+                        "tipo": "varchar",
+                        "tamano": 60,
+                        "descripcion": "tipo de documento de identificacion (cc, nit)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha_aceptacion_habeas_data",
+                        "tipo": "datetime",
+                        "tamano": null,
+                        "descripcion": "fecha aceptacion habeas data",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "direccion",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "direccion cliente (CALLE GRANDE #12-83)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "telefono",
+                        "tipo": "varchar",
+                        "tamano": 20,
+                        "descripcion": "telefono registrado (7756453)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "email",
+                        "tipo": "varchar",
+                        "tamano": 255,
+                        "descripcion": "correo del cliente (mangulo@acercate.com, juanr@gmail.com)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "habeas_data",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "indicador aceptacion habeas data(1:si/0:no)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_tipo_cliente",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo de criterio cliente ej(301:empleado, 315:negocio)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_cliente",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion del tipo de cliente (negocio, empleado etc)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_subtipo_cliente",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo de subtipo cliente",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "subtipo_cliente",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion tipo cliente (empleado,horeca)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_ciudad",
+                        "tipo": "char",
+                        "tamano": 8,
+                        "descripcion": "codigo postal (13006,  130530)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ciudad",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion ciudad (ciudad de origen actual)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_sexo",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "id  del sexo (femenino 1, masculino 2)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "sexo",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion del sexo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "ind_estado_cliente",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "indicador estado cliente (1/0) activo e inactivo",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha_actualizacion",
+                        "tipo": "datetime",
+                        "tamano": null,
+                        "descripcion": "fecha actualizacion del documento",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "celular",
+                        "tipo": "varchar",
+                        "tamano": 50,
+                        "descripcion": "celular (30055677879)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "origen",
+                        "tipo": "varchar",
+                        "tamano": 3,
+                        "descripcion": "origen de crecion (pos, tercero)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
+            },
+         {
+                        "table_name": "F_ventas",
+                        "description": "Esta tabla almacena transacciones de ventas, pos y estandar de la compañía. Es una tabla transaccional",
+                        "grain": "item_por_documento",
+                        "business_key": ["id_cia", "num_documento", "sk_item"],
+                        "cols": [
+                    {
+                        "campo": "sk_cliente",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla cliente",
+                        "is_pk":false,
+                        "fk":"D_clientes.sk_cliente"
+                    },
+                    {
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "compañía (1:invercomer,7:megaaceites )",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "sk_fecha_dcto",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "fecha documento, este viene del ERP como formato entero continuo.",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "sk_geografia",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla  d_geografia",
+                        "is_pk":false,
+                        "fk":"D_Geografia.sk_geografia"
+                    },
+                    {
+                        "campo": "sk_motivo",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla  d_motivo",
+                        "is_pk":false,
+                        "fk":"D_motivos.sk_motivo"
+                    },
+                    {
+                        "campo": "sk_item",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla d_item",
+                        "is_pk":true,
+                        "fk":"D_Item.sk_item"
+                    },
+                    {
+                        "campo": "sk_canal",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla d_canal",
+                        "is_pk":false,
+                        "fk":"D_canal.sk_canal"
+                    },
+                    {
+                        "campo": "sk_tipo_documento",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_tipo_documento",
+                        "is_pk":false,
+                        "fk":"D_Tipo_documento.sk_tipo_documento"
+                    },
+                    {
+                        "campo": "sk_moneda",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla sk_moneda. nota: valores almacenados por defecto en COP; conversión externa si se requiere otra moneda.",
+                        "is_pk":false,
+                        "fk":"D_moneda.sk_moneda"
+                    },
+                    {
+                        "campo": "num_documento",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "consecutivo de factura  Ejemplo (41259, 41325)",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "cantidad",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "cantidad vendida (gramo,minilitro, und)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "costo_vta_pesos",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "costo de venta ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "descuentos_pesos",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "descuento ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "iva_pesos",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor iva peso  ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "precio_vta_sin_iva_pesos",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "precio de venta ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "vr_vta_sin_iva_pesos",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "venta subtotal sin el impuesto afecta margen  ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "vr_imp_margens",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor del impuesto afecta margen (bebidas, cigarros) ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "vr_utilidad_pesos",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "utilidad ej:($5,433)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "sk_hora_dcto",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_horas (23:14)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "origen",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "origen factura ej:(pos, tercero)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha_dcto",
+                        "tipo": "datetime",
+                        "tamano": null,
+                        "descripcion": "esta fecha del viene del ERP,fecha documento ej(23/09/2025)",
+                        "is_pk":false,
+                        "fk":""
+                    }                    
+                ]
+            },
+            {
+                "table_name": "D_canal",
+                "description": "Tabla creada en la bodega de datos para identificar el canal de venta según las reglas de negocio. Call Center: Medio de pago  domicilio y lista de precios de la tienda, Marketplace: Medio de pago  domicilio y lista de precios App., Horeca: Todos los clientes con criterio mayor a 232, Institucional: Todos los clientes con criterio 233, Gobierno: Todos los clientes con criterio 234,Transformadores de comida rápida: Todos los clientes con criterio 235,Comercializadora: Todos los clientes con criterio 210,Genérico Facturación Electrónica: Todos los clientes con criterio 236,Si el cliente no tiene criterio asignado, la venta se clasifica como compra en punto de venta.",
+                "cols": [
+                    {
+                        "campo": "sk_canal",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_canal",
+                        "tipo": "char",
+                        "tamano": 3,
+                        "descripcion": "codigo del canal",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "canal",
+                        "tipo": "varchar",
+                        "tamano": 50,
+                        "descripcion": "Punto de Venta, callcenter, Marketplace / Web, Rappi, Horeca, Institucional, Gobierno,  Transformadores de comida Rapida, comercializadora.",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                       {
+                        "campo": "tipo_canal",
+                        "tipo": "varchar",
+                        "tamano": 50,
+                        "descripcion": "Tipo de canal (Presencial / no presencial, Especiales)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
+            },
+            {
+                "table_name": "D_moneda",
+                "description": "Esta tabla almacena las Dimension moneda. ",
+                "cols": [
+                    {
+                        "campo": "sk_moneda",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "id primario de la tabla",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_moneda",
+                        "tipo": "char",
+                        "tamano": 3,
+                        "descripcion": "codigo de moneda (COP/USD)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "moneda",
+                        "tipo": "varchar",
+                        "tamano": 50,
+                        "descripcion": "describe la moneda (peso colombiano / dólar estadounidense)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
+            }
+        ]
+    }
+]

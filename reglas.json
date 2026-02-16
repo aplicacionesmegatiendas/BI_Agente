@@ -1,0 +1,278 @@
+{
+  "datamart_rules": {
+    "version": "1.2",
+    "effective_date": "2026-02-13",
+    "scope": {
+      "platform": {
+        "database_engine": "SQL Server 2022",
+        "allowed_operations": ["SELECT"],
+        "disallowed_operations": [
+          "INSERT",
+          "UPDATE",
+          "DELETE",
+          "MERGE",
+          "CREATE",
+          "ALTER",
+          "DROP",
+          "TRUNCATE"
+        ]
+      },
+      "model_source": "db_config_docs.json",
+      "domain": "ventas_datamart"
+    },
+    "governance_principles": [
+      {
+        "principle_id": "GP_READ_ONLY",
+        "name": "Extracción solo lectura",
+        "statement": "Todas las consultas deben ser de solo lectura. No se permite crear ni modificar objetos o datos."
+      },
+      {
+        "principle_id": "GP_STAR_SCHEMA",
+        "name": "Modelo tipo estrella",
+        "statement": "El Data Mart se interpreta como esquema estrella: una tabla de hechos (F_ventas) relacionada con dimensiones D_* mediante llaves sustitutas (sk_*)."
+      },
+      {
+        "principle_id": "GP_KEYS_JOIN",
+        "name": "Uniones por llave sustituta",
+        "statement": "Las uniones entre hechos y dimensiones se realizan por sk_* (surrogate keys). No se debe forzar unión por códigos naturales salvo que el modelo lo exija explícitamente."
+      },
+      {
+        "principle_id": "GP_COMPANY_GOVERNANCE_FROM_GEOGRAFIA",
+        "name": "Gobernanza de compañía desde D_Geografia",
+        "statement": "La gobernanza oficial del dato por compañía (id_cia) reside en la tabla D_Geografia. Todos los filtros por compañía deben aplicarse a través de D_Geografia utilizando la relación F_ventas.sk_geografia = D_Geografia.sk_geografia. Si el usuario no especifica id_cia, se debe asumir como valor predeterminado id_cia = 1 (compañía principal)."
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "DIMENSIONS_SCD2_DEFAULT",
+        "name": "Dimensiones históricas por defecto (SCD Tipo 2)",
+        "category": "dimensions",
+        "priority": "high",
+        "status": "active",
+        "statement": "Todas las dimensiones D_* se consideran históricas (SCD Tipo 2): ante cambios de atributos se inserta una nueva versión y no se sobrescribe la anterior.",
+        "behavior": {
+          "on_attribute_change": {
+            "insert_new_record": true,
+            "overwrite_existing_record": false,
+            "preserve_history": true
+          },
+          "keying": {
+            "surrogate_key": "sk_*",
+            "natural_keys": [
+              "id_*",
+              "codigo_*",
+              "nit_*",
+              "cedula_*",
+              "documento_*"
+            ],
+            "note": "El histórico se garantiza por versiones con sk_* distintas; la fact debe enlazar a la versión correcta mediante sk_*."
+          }
+        },
+        "agent_instructions": [
+          "Asumir SCD2 para cualquier dimensión aunque no existan campos de vigencia visibles en la metadata.",
+          "No intentar reconstruir vigencias por fechas si la dimensión no expone columnas de inicio/fin/flag actual.",
+          "Para análisis histórico, confiar en el sk_* almacenado en F_ventas como referencia de la versión vigente al momento del hecho."
+        ]
+      },
+      {
+        "rule_id": "CURRENCY_BASE_COP",
+        "name": "Moneda base COP (métricas almacenadas en pesos colombianos)",
+        "category": "currency",
+        "priority": "high",
+        "status": "active",
+        "statement": "Todas las métricas monetarias del Data Mart están almacenadas en COP (Pesos Colombianos).",
+        "model_alignment": {
+          "dimension_exists": true,
+          "dimension_name": "D_moneda",
+          "fact_reference": "F_ventas.sk_moneda",
+          "usage_policy": "OPERATIVO_SOLO_COP",
+          "details": "Aunque exista el catálogo de monedas (p. ej. COP/USD), las métricas financieras almacenadas en F_ventas están expresadas en COP. Si se requiere otra moneda, debe aplicarse conversión externa."
+        },
+        "conversion_policy": {
+          "multi_currency_storage": false,
+          "exchange_rate_history_in_model": false,
+          "automatic_conversion_in_model": false,
+          "if_user_requests_other_currency": {
+            "response": "Los valores están en COP. Para verlos en otra moneda se debe aplicar conversión externa usando una tasa provista por el consumidor.",
+            "required_input": "tasa_cambio (externa) y fecha/referencia de tasa (si aplica).",
+            "allowed_approach": "Convertir en capa de consumo (BI/Reporting) o en la lógica del consumidor sin modificar el Data Mart."
+          }
+        },
+        "applies_to_metrics": [
+          "costo_vta_pesos",
+          "descuentos_pesos",
+          "iva_pesos",
+          "precio_vta_sin_iva_pesos",
+          "vr_vta_sin_iva_pesos",
+          "vr_imp_margens",
+          "vr_utilidad_pesos"
+        ],
+        "agent_instructions": [
+          "Interpretar todas las métricas monetarias como COP.",
+          "No inferir ni buscar tasas de cambio dentro del modelo.",
+          "Si el usuario pide USD u otra moneda, solicitar tasa externa o documentar que la conversión no está soportada dentro del Data Mart."
+        ]
+      },
+      {
+        "rule_id": "FACT_GRAIN_F_VENTAS",
+        "name": "Grano de la tabla de hechos F_ventas",
+        "category": "facts",
+        "priority": "high",
+        "status": "active",
+        "statement": "F_ventas se interpreta como hechos a nivel transaccional a grano item por documento, asociado a cliente, geografía, canal, tipo de documento, motivo y moneda.",
+        "grain_definition": {
+          "fact_table": "F_ventas",
+          "grain": "item_por_documento",
+          "business_key": ["id_cia", "num_documento", "sk_item"],
+          "join_keys_expected": [
+            "sk_cliente",
+            "sk_item",
+            "sk_geografia",
+            "sk_canal",
+            "sk_tipo_documento",
+            "sk_moneda",
+            "sk_motivo"
+          ],
+          "non_join_attributes": [
+            {
+              "field": "sk_fecha_dcto",
+              "reason": "No existe D_fecha en la metadata; sk_fecha_dcto se trata como atributo ERP no joineable."
+            }
+          ]
+        },
+        "agent_instructions": [
+          "Evitar sumar métricas sin agrupar correctamente por el grano (riesgo de duplicación al hacer joins).",
+          "Cuando se unan múltiples dimensiones, validar cardinalidad esperada (1 dimensión : N hechos).",
+          "No tratar sk_fecha_dcto como llave de join mientras no exista D_fecha en la metadata."
+        ]
+      },
+      {
+        "rule_id": "JOIN_CONVENTION",
+        "name": "Convención de joins Hecho ↔ Dimensión",
+        "category": "querying",
+        "priority": "high",
+        "status": "active",
+        "statement": "Los joins deben seguir la convención F_ventas.sk_* = D_*.sk_* y preferir LEFT JOIN cuando se quiera preservar el universo de hechos.",
+        "join_patterns": [
+          {
+            "fact_key": "F_ventas.sk_cliente",
+            "dimension": "D_clientes",
+            "dimension_key": "D_clientes.sk_cliente"
+          },
+          {
+            "fact_key": "F_ventas.sk_item",
+            "dimension": "D_Item",
+            "dimension_key": "D_Item.sk_item"
+          },
+          {
+            "fact_key": "F_ventas.sk_geografia",
+            "dimension": "D_Geografia",
+            "dimension_key": "D_Geografia.sk_geografia"
+          },
+          {
+            "fact_key": "F_ventas.sk_canal",
+            "dimension": "D_canal",
+            "dimension_key": "D_canal.sk_canal"
+          },
+          {
+            "fact_key": "F_ventas.sk_tipo_documento",
+            "dimension": "D_Tipo_documento",
+            "dimension_key": "D_Tipo_documento.sk_tipo_documento"
+          },
+          {
+            "fact_key": "F_ventas.sk_moneda",
+            "dimension": "D_moneda",
+            "dimension_key": "D_moneda.sk_moneda"
+          },
+          {
+            "fact_key": "F_ventas.sk_motivo",
+            "dimension": "D_motivos",
+            "dimension_key": "D_motivos.sk_motivo"
+          }
+        ],
+        "agent_instructions": [
+          "Usar LEFT JOIN por defecto para no perder hechos por faltantes dimensionales, salvo que el usuario pida lo contrario.",
+          "No unir por descripciones (texto) sino por llaves."
+        ]
+      },
+      {
+        "rule_id": "DATE_HANDLING",
+        "name": "Regla de fechas (sin dimensión calendario explícita)",
+        "category": "time",
+        "priority": "medium",
+        "status": "active",
+        "statement": "Si no existe D_fecha en la metadata, el análisis temporal se basa en F_ventas.fecha_dcto y/o F_ventas.sk_fecha_dcto como atributos del ERP (sin joins).",
+        "behavior": {
+          "preferred_column_for_filtering": "F_ventas.fecha_dcto",
+          "preferred_column_for_grouping": "F_ventas.fecha_dcto",
+          "note": "Funciones de calendario (semana fiscal, festivos, etc.) requieren una dimensión calendario externa o reglas fiscales externas."
+        },
+        "agent_instructions": [
+          "Agrupar por fecha usando fecha_dcto si existe y es confiable.",
+          "Si el usuario requiere semana/mes/trimestre fiscal, aclarar que se necesita una dimensión calendario o reglas fiscales externas."
+        ]
+      },
+      {
+        "rule_id": "NAMING_AND_ESCAPING",
+        "name": "Nombres de columnas y escape",
+        "category": "compatibility",
+        "priority": "low",
+        "status": "active",
+        "statement": "Cualquier identificador con caracteres especiales o tildes debe escaparse con corchetes en SQL Server.",
+        "agent_instructions": [
+          "Si aparece un campo con tilde o carácter especial, usar [nombre_campo] en las consultas.",
+          "Preferir siempre el uso de alias consistentes y nombres plenamente calificados (schema.tabla.columna) si el schema está disponible."
+        ]
+      },
+      {
+        "rule_id": "COLUMN_MASTERS_RELATIONSHIP",
+        "name": "Maestros implícitos en columnas (id_x + x) con filtro por ID o por nombre",
+        "category": "querying",
+        "priority": "medium",
+        "status": "active",
+        "statement": "Algunas columnas dentro de tablas (principalmente dimensiones como D_Item) actúan como maestros implícitos aunque no existan como dimensiones independientes. Normalmente aparecen como pares: (id_x + x), por ejemplo (id_subfamilia + subfamilia), (id_familia + familia), (id_marca + marca), (id_proveedor + proveedor). Estos pares se pueden usar para segmentar, agrupar y filtrar. El agente debe mostrar resultados usando la columna descriptiva (x), pero debe privilegiar filtros por id_x por precisión. El usuario puede ordenar filtrar directamente por id_x (por ejemplo si otra IA ya resolvió el id).",
+        "agent_instructions": [
+          "Detectar maestros implícitos cuando exista el patrón de columnas (id_x + x) dentro de una misma tabla (ej.: D_Item.id_familia y D_Item.familia).",
+          "Permitir que el usuario pida segmentación/agrupación por el maestro implícito usando el nombre (x) o el ID (id_x).",
+          "Mostrar siempre la columna descriptiva (x) en los resultados (legibilidad), incluso si el filtro se aplicó por id_x.",
+          "Si el usuario provee directamente id_x, aplicar el filtro por id_x sin hacer búsquedas adicionales.",
+          "Si el usuario provee el nombre/descripcion (x) y no el id_x, primero resolver el id_x con una búsqueda (lookup) en la misma tabla y luego filtrar por id_x para ejecutar la consulta principal.",
+          "Cuando el lookup por nombre (x) devuelva múltiples id_x (por ejemplo por homónimos o diferencias de compañía), devolver resultados agrupados por x e id_x o advertir ambigüedad y aplicar una estrategia segura: incluir todos los id_x encontrados.",
+          "No crear ni asumir la existencia de una dimensión externa (D_x) para estos maestros implícitos; deben usarse desde la tabla donde residen (ej.: D_Item).",
+          "Para llegar a estos maestros implícitos desde hechos, siempre realizar primero el JOIN correcto por llaves sustitutas (ej.: F_ventas.sk_item = D_Item.sk_item) y luego aplicar filtros/agrupaciones sobre id_x/x.",
+          "Estos maestros implícitos heredan el comportamiento histórico (SCD2) de la dimensión donde viven; no asumir historificación independiente.",
+          "Evitar redundancia en el resultado: si el usuario pide un nivel (ej. familia), no incluir niveles inferiores (subfamilia) a menos que el usuario lo solicite."
+        ],
+        "examples": [
+          {
+            "user_request": "Ventas por familia",
+            "agent_behavior": "JOIN F_ventas con D_Item por sk_item y agrupar por D_Item.familia (opcionalmente incluir D_Item.id_familia)."
+          },
+          {
+            "user_request": "Filtra por id_familia = '0003' y muéstrame ventas",
+            "agent_behavior": "Aplicar filtro directo por D_Item.id_familia = '0003' y mostrar D_Item.familia en el resultado."
+          },
+          {
+            "user_request": "Filtra por subfamilia = 'Pasta larga spaghetti'",
+            "agent_behavior": "Hacer lookup en D_Item para obtener id_subfamilia(s), luego filtrar por id_subfamilia y mostrar subfamilia."
+          }
+        ]
+      },
+      {
+        "rule_id": "COMPANY_FILTER_FROM_GEOGRAFIA",
+        "name": "Filtro obligatorio por compañía desde D_Geografia",
+        "category": "governance",
+        "priority": "high",
+        "status": "active",
+        "statement": "La segmentación por compañía (id_cia) debe realizarse exclusivamente a través de D_Geografia.",
+        "agent_instructions": [
+          "Para aplicar filtro por compañía, realizar siempre JOIN entre F_ventas y D_Geografia usando sk_geografia.",
+          "Aplicar el filtro por D_Geografia.id_cia.",
+          "No aplicar filtro directo por F_ventas.id_cia si existe relación con D_Geografia.",
+          "Si el usuario no especifica compañía, asumir id_cia = 1 como valor predeterminado.",
+          "Mantener consistencia de compañía en todos los joins para evitar mezcla de datos entre compañías."
+        ]
+      }
+    ]
+  }
+}
