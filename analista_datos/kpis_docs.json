@@ -1,0 +1,50 @@
+[{
+  "kpi_id": "string",
+  "name": "string",
+  "description": "string",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company"],
+    "optional": ["granularity", "dimensions", "filters"]
+  },
+
+  "dba_requirements": {
+    "dataset_mode": "AGGREGATED | DETAIL",
+    "required_columns": ["column1", "column2"]
+  },
+
+  "calculation": {
+    "type": "SUM | AVG | COUNT | DERIVED",
+    "formula": "expression using columns",
+    "guard": "optional protection rule"
+  },
+
+  "format": {
+    "type": "currency | percentage | number",
+    "decimals": 2
+  }
+},
+{
+  
+  "kpi_id": "sales_net",
+  "name": "Ventas Netas",
+  "description": "Total de ventas netas en el periodo seleccionado.",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company"],
+    "optional": ["granularity", "dimensions"]
+  },
+  "dba_requirements": {
+    "dataset_mode": "AGGREGATED",
+    "required_columns": ["date", "sales_net"]
+  },
+  "calculation": {
+    "type": "SUM",
+    "formula": "SUM(sales_net)"
+  },
+  "format": {
+    "type": "currency",
+    "decimals": 0
+  }
+}
+]

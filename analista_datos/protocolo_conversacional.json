@@ -1,0 +1,138 @@
+{
+  "protocol_id": "web_analyst_frontend_protocol_v1",
+  "description": "Contrato entre el Analista Web y el Front-End para visualización de reportes y estados",
+  "envelope": {
+    "required": ["type", "correlation_id", "timestamp_iso", "payload"],
+    "optional": ["message"]
+  },
+  "types": {
+
+    "LOADING": {
+      "purpose": "Indica que el proceso está en ejecución",
+      "payload": {
+        "stage": "INTAKE | REQUESTING_DBA | PROCESSING_DATA | GENERATING_REPORT",
+        "progress_pct": 0
+      }
+    },
+
+    "NEED_USER_INPUT": {
+      "purpose": "El analista necesita más información del usuario",
+      "payload": {
+        "missing_fields": [
+          {
+            "name": "time_range",
+            "label": "Rango de fechas",
+            "type": "date_range",
+            "required": true
+          },
+          {
+            "name": "company",
+            "label": "Compañía",
+            "type": "select",
+            "options": ["CO", "MX", "PE"],
+            "required": true
+          }
+        ],
+        "message": "Necesito estos datos para generar el reporte."
+      }
+    },
+
+    "ERROR": {
+      "purpose": "Error funcional o técnico",
+      "payload": {
+        "code": "MISSING_PARAMS | SERVICE_FAILURE | EMPTY_RESULT | UNKNOWN",
+        "message": "Descripción simple para mostrar al usuario",
+        "retryable": true
+      }
+    },
+
+    "REPORT_READY": {
+      "purpose": "Entrega final del reporte para visualización",
+      "payload": {
+        "summary": {
+          "title": "Ventas Enero 2026",
+          "description": "Resumen de ventas netas y margen por sucursal",
+          "generated_at": "2026-02-16T10:20:00-05:00"
+        },
+
+        "kpis": [
+          {
+            "label": "Ventas Netas",
+            "value": 125000000,
+            "format": "currency",
+            "trend": {
+              "value": 5.2,
+              "direction": "up"
+            }
+          },
+          {
+            "label": "Margen %",
+            "value": 32.5,
+            "format": "percentage",
+            "trend": {
+              "value": -1.3,
+              "direction": "down"
+            }
+          }
+        ],
+
+        "charts": [
+          {
+            "id": "ventas_por_sucursal",
+            "type": "bar",
+            "title": "Ventas por Sucursal",
+            "x_field": "sucursal_nombre",
+            "y_field": "ventas_netas",
+            "data": [
+              {
+                "sucursal_nombre": "Bogotá Norte",
+                "ventas_netas": 50000000
+              },
+              {
+                "sucursal_nombre": "Medellín Centro",
+                "ventas_netas": 75000000
+              }
+            ]
+          }
+        ],
+
+        "tables": [
+          {
+            "id": "detalle_sucursales",
+            "columns": [
+              { "name": "sucursal_nombre", "label": "Sucursal", "type": "string" },
+              { "name": "ventas_netas", "label": "Ventas", "type": "currency" },
+              { "name": "margen_pct", "label": "Margen %", "type": "percentage" }
+            ],
+            "rows": [
+              {
+                "sucursal_nombre": "Bogotá Norte",
+                "ventas_netas": 50000000,
+                "margen_pct": 30.2
+              }
+            ]
+          }
+        ],
+
+        "insights": [
+          "Las ventas crecieron 5.2% vs el mes anterior.",
+          "La sucursal Medellín Centro es la de mayor contribución.",
+          "El margen cayó levemente por aumento en costos."
+        ],
+
+        "downloads": [
+          {
+            "label": "Descargar Excel",
+            "type": "xlsx",
+            "url": "/storage/reporte_ventas_enero.xlsx"
+          },
+          {
+            "label": "Descargar CSV",
+            "type": "csv",
+            "url": "/storage/dataset_transformado.csv"
+          }
+        ]
+      }
+    }
+  }
+}

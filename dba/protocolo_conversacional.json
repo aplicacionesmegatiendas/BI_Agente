@@ -1,0 +1,173 @@
+{
+  "protocol_id": "dba_min_exchange_v1",
+  "role": "DBA",
+  "engine": "SQL Server 2022",
+  "permissions": ["READ_ONLY"],
+  "envelope": {
+    "required": ["type", "correlation_id", "timestamp_iso", "payload"],
+    "optional": ["message_id", "state", "notes"]
+  },
+  "types": {
+    "MISSING_PARAMS": {
+      "purpose": "Faltan parámetros para construir el SQL",
+      "payload_schema": {
+        "required": ["missing", "questions"],
+        "properties": {
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "why"],
+              "properties": {
+                "name": { "type": "string" },
+                "why": { "type": "string" },
+                "example": { "type": "string" }
+              }
+            }
+          },
+          "questions": { "type": "array", "items": { "type": "string" } },
+          "defaults_if_no_answer": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "default", "risk"],
+              "properties": {
+                "name": { "type": "string" },
+                "default": { "type": "string" },
+                "risk": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] }
+              }
+            }
+          }
+        }
+      },
+      "example": {
+        "type": "MISSING_PARAMS",
+        "correlation_id": "corr-001",
+        "timestamp_iso": "2026-02-16T10:05:00-05:00",
+        "payload": {
+          "missing": [
+            {
+              "name": "time_range.end",
+              "why": "Necesito acotar el rango para filtrar por fecha",
+              "example": "2026-01-31"
+            },
+            {
+              "name": "dataset_mode",
+              "why": "Debo saber si es detalle o agregado (GROUP BY)",
+              "example": "AGGREGATED"
+            }
+          ],
+          "questions": [
+            "¿Cuál es la fecha fin (YYYY-MM-DD)?",
+            "¿Quieres detalle (DETAIL) o agregado (AGGREGATED)?"
+          ],
+          "defaults_if_no_answer": [
+            { "name": "dataset_mode", "default": "AGGREGATED", "risk": "MEDIUM" }
+          ]
+        }
+      }
+    },
+    "SERVICE_FAILURE": {
+      "purpose": "Fallo de comunicación/servicio (conectividad, permisos, timeout, fuente no disponible)",
+      "payload_schema": {
+        "required": ["error_code", "message"],
+        "properties": {
+          "error_code": {
+            "type": "string",
+            "enum": [
+              "DB_CONN_ERROR",
+              "TIMEOUT",
+              "PERMISSION_DENIED",
+              "SOURCE_UNAVAILABLE",
+              "UNKNOWN"
+            ]
+          },
+          "message": { "type": "string" },
+          "retryable": { "type": "boolean" },
+          "details": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "example": {
+        "type": "SERVICE_FAILURE",
+        "correlation_id": "corr-001",
+        "timestamp_iso": "2026-02-16T10:06:00-05:00",
+        "payload": {
+          "error_code": "TIMEOUT",
+          "message": "Timeout ejecutando consulta (superó el límite configurado).",
+          "retryable": true,
+          "details": {
+            "timeout_seconds": 120,
+            "hint": "Reducir rango de fechas o pedir dataset agregado"
+          }
+        }
+      }
+    },
+    "SQL_RESULT": {
+      "purpose": "Entrega del SQL final (solo lectura) y contrato mínimo de salida",
+      "payload_schema": {
+        "required": ["sql", "params", "columns"],
+        "properties": {
+          "sql": { "type": "string" },
+          "params": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type", "example"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["date", "datetime", "int", "decimal", "string"]
+                },
+                "example": { "type": "string" }
+              }
+            }
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["date", "string", "int", "decimal", "float", "boolean"]
+                }
+              }
+            }
+          },
+          "mode": { "type": "string", "enum": ["DETAIL", "AGGREGATED"] },
+          "grain": { "type": "array", "items": { "type": "string" } },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "example": {
+        "type": "SQL_RESULT",
+        "correlation_id": "corr-001",
+        "timestamp_iso": "2026-02-16T10:10:00-05:00",
+        "payload": {
+          "mode": "AGGREGATED",
+          "grain": ["fecha", "sucursal_id"],
+          "params": [
+            { "name": "@start_date", "type": "date", "example": "2026-01-01" },
+            { "name": "@end_date", "type": "date", "example": "2026-01-31" },
+            { "name": "@compania", "type": "string", "example": "CO" }
+          ],
+          "columns": [
+            { "name": "fecha", "type": "date" },
+            { "name": "sucursal_id", "type": "string" },
+            { "name": "ventas_netas", "type": "decimal" },
+            { "name": "costo", "type": "decimal" },
+            { "name": "margen", "type": "decimal" }
+          ],
+          "sql": "SELECT CAST(f.fecha AS date) AS fecha, s.sucursal_id, SUM(f.ventas_netas) AS ventas_netas, SUM(f.costo) AS costo, SUM(f.ventas_netas) - SUM(f.costo) AS margen\nFROM dbo.fact_ventas f\nJOIN dbo.dim_sucursal s ON s.sucursal_key = f.sucursal_key\nWHERE f.fecha >= @start_date AND f.fecha < DATEADD(day,1,@end_date) AND f.compania = @compania\nGROUP BY CAST(f.fecha AS date), s.sucursal_id\nORDER BY fecha, s.sucursal_id;",
+          "notes": [
+            "Solo lectura (SELECT).",
+            "Rango fecha fin es inclusivo usando < end_date+1."
+          ]
+        }
+      }
+    }
+  }
+}
