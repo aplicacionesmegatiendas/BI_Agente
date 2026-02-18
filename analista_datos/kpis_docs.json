@@ -46,5 +46,114 @@
     "type": "currency",
     "decimals": 0
   }
-}
+}, 
+{
+    "kpi_id": "sales_without_tax",
+    "name": "Ventas sin IVA",
+    "description": "Total de ventas sin incluir IVA en el periodo seleccionado.",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["granularity", "dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["fecha_dcto", "id_cia", "vr_vta_sin_iva_pesos"]
+    },
+    "calculation": {
+      "type": "SUM",
+      "formula": "SUM(vr_vta_sin_iva_pesos)"
+    },
+    "format": {
+      "type": "currency",
+      "decimals": 0
+    }
+  },
+  {
+    "kpi_id": "sales_with_tax",
+    "name": "Ventas con IVA",
+    "description": "Total de ventas incluyendo IVA en el periodo seleccionado.",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["granularity", "dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["fecha_dcto", "id_cia", "vr_vta_sin_iva_pesos", "iva_pesos"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "SUM(vr_vta_sin_iva_pesos + iva_pesos)"
+    },
+    "format": {
+      "type": "currency",
+      "decimals": 0
+    }
+  },
+  {
+    "kpi_id": "units_sold",
+    "name": "Unidades Vendidas",
+    "description": "Cantidad total de unidades vendidas en el periodo.",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["granularity", "dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["fecha_dcto", "id_cia", "cantidad"]
+    },
+    "calculation": {
+      "type": "SUM",
+      "formula": "SUM(cantidad)"
+    },
+    "format": {
+      "type": "number",
+      "decimals": 0
+    }
+  },
+  {
+    "kpi_id": "invoice_count",
+    "name": "Número de Facturas",
+    "description": "Cantidad total de facturas en el periodo seleccionado.",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["granularity", "dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "DETAIL",
+      "required_columns": ["fecha_dcto", "id_cia", "num_documento"]
+    },
+    "calculation": {
+      "type": "COUNT",
+      "formula": "COUNT(DISTINCT num_documento)"
+    },
+    "format": {
+      "type": "number",
+      "decimals": 0
+    }
+  },
+  {
+    "kpi_id": "average_ticket",
+    "name": "Ticket Promedio",
+    "description": "Valor promedio por factura en el periodo seleccionado (sin IVA).",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["granularity", "dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "DETAIL",
+      "required_columns": ["vr_vta_sin_iva_pesos", "num_documento"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "SUM(vr_vta_sin_iva_pesos) / NULLIF(COUNT(DISTINCT num_documento),0)",
+      "guard": "If invoice count = 0 return 0"
+    },
+    "format": {
+      "type": "currency",
+      "decimals": 0
+    }
+  }
+
+
+
 ]
