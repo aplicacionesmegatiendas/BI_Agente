@@ -1326,6 +1326,84 @@
                         "fk":""
                     }
                 ]
+            },
+            {
+                "table_name": "T_ppto_venta",
+                "description": "Tabla de Presupuesto de venta de la compañía",
+                "cols": [
+                    {
+                        "campo": "id_co",
+                        "tipo": "nchar",
+                        "tamano": 3,
+                        "descripcion": "codigo del centro de operación",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "uen",
+                        "tipo": "varchar",
+                        "tamano": 60,
+                        "descripcion": "nombre o descripcion uen ejemplo (carnes, bebidas, fruver)",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha",
+                        "tipo": "date",
+                        "tamano": null,
+                        "descripcion": "fecha  del valor del presupuesto correspondiente al dia",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "valor_ppto",
+                        "tipo": "money",
+                        "tamano": null,
+                        "descripcion": "valor del presupuesto",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "periodo",
+                        "tipo": "varchar",
+                        "tamano": 6,
+                        "descripcion": "el periodo que contempla es solo de año o mes",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "negociador",
+                        "tipo": "varchar",
+                        "tamano": 60,
+                        "descripcion": "nombre o descripcion negociador",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "criterio_dir",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo del negociador",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "dir_uen",
+                        "tipo": "varchar",
+                        "tamano": 60,
+                        "descripcion": "descripcion direccion uen ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "tipo_venta",
+                        "tipo": "varchar",
+                        "tamano": 12,
+                        "descripcion": "El unico tipo de venta es (retail)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
             }
         ]
     }

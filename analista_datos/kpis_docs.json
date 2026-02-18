@@ -46,114 +46,149 @@
     "type": "currency",
     "decimals": 0
   }
-}, 
+},
 {
-    "kpi_id": "sales_without_tax",
-    "name": "Ventas sin IVA",
-    "description": "Total de ventas sin incluir IVA en el periodo seleccionado.",
+    "kpi_id": "Margen_Retail",
+    "name": "Margen Retail",
+    "description": "(ValorVenta - CostoVenta) / Venta",
     "frontend_inputs": {
       "required": ["time_range", "company"],
       "optional": ["granularity", "dimensions", "filters"]
     },
     "dba_requirements": {
       "dataset_mode": "AGGREGATED",
-      "required_columns": ["fecha_dcto", "id_cia", "vr_vta_sin_iva_pesos"]
-    },
-    "calculation": {
-      "type": "SUM",
-      "formula": "SUM(vr_vta_sin_iva_pesos)"
-    },
-    "format": {
-      "type": "currency",
-      "decimals": 0
-    }
-  },
-  {
-    "kpi_id": "sales_with_tax",
-    "name": "Ventas con IVA",
-    "description": "Total de ventas incluyendo IVA en el periodo seleccionado.",
-    "frontend_inputs": {
-      "required": ["time_range", "company"],
-      "optional": ["granularity", "dimensions", "filters"]
-    },
-    "dba_requirements": {
-      "dataset_mode": "AGGREGATED",
-      "required_columns": ["fecha_dcto", "id_cia", "vr_vta_sin_iva_pesos", "iva_pesos"]
+      "required_columns": ["vr_vta_sin_iva_pesos", "costo_vta_pesos"]
     },
     "calculation": {
       "type": "DERIVED",
-      "formula": "SUM(vr_vta_sin_iva_pesos + iva_pesos)"
+      "formula": "(SUM(vr_vta_sin_iva_pesos) - SUM(costo_vta_pesos)) / NULLIF(SUM(vr_vta_sin_iva_pesos),0)"
     },
     "format": {
-      "type": "currency",
-      "decimals": 0
+      "type": "percentage",
+      "decimals": 4
     }
-  },
-  {
-    "kpi_id": "units_sold",
-    "name": "Unidades Vendidas",
-    "description": "Cantidad total de unidades vendidas en el periodo.",
+},
+{
+    "kpi_id": "Porc_Desc",
+    "name": "% Desc",
+    "description": "(VentaDescuento / VentaSubtotal)",
     "frontend_inputs": {
       "required": ["time_range", "company"],
       "optional": ["granularity", "dimensions", "filters"]
     },
     "dba_requirements": {
       "dataset_mode": "AGGREGATED",
-      "required_columns": ["fecha_dcto", "id_cia", "cantidad"]
-    },
-    "calculation": {
-      "type": "SUM",
-      "formula": "SUM(cantidad)"
-    },
-    "format": {
-      "type": "number",
-      "decimals": 0
-    }
-  },
-  {
-    "kpi_id": "invoice_count",
-    "name": "Número de Facturas",
-    "description": "Cantidad total de facturas en el periodo seleccionado.",
-    "frontend_inputs": {
-      "required": ["time_range", "company"],
-      "optional": ["granularity", "dimensions", "filters"]
-    },
-    "dba_requirements": {
-      "dataset_mode": "DETAIL",
-      "required_columns": ["fecha_dcto", "id_cia", "num_documento"]
-    },
-    "calculation": {
-      "type": "COUNT",
-      "formula": "COUNT(DISTINCT num_documento)"
-    },
-    "format": {
-      "type": "number",
-      "decimals": 0
-    }
-  },
-  {
-    "kpi_id": "average_ticket",
-    "name": "Ticket Promedio",
-    "description": "Valor promedio por factura en el periodo seleccionado (sin IVA).",
-    "frontend_inputs": {
-      "required": ["time_range", "company"],
-      "optional": ["granularity", "dimensions", "filters"]
-    },
-    "dba_requirements": {
-      "dataset_mode": "DETAIL",
-      "required_columns": ["vr_vta_sin_iva_pesos", "num_documento"]
+      "required_columns": ["descuentos_pesos", "vr_vta_sin_iva_pesos"]
     },
     "calculation": {
       "type": "DERIVED",
-      "formula": "SUM(vr_vta_sin_iva_pesos) / NULLIF(COUNT(DISTINCT num_documento),0)",
-      "guard": "If invoice count = 0 return 0"
+      "formula": "SUM(descuentos_pesos) / NULLIF(SUM(vr_vta_sin_iva_pesos),0)"
     },
     "format": {
-      "type": "currency",
-      "decimals": 0
+      "type": "percentage",
+      "decimals": 4
     }
+},
+{
+    "kpi_id": "Margen_Mas_Porc_Desc",
+    "name": "Margen + %Desc",
+    "description": "Margen Retail + % Desc",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["granularity", "dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["vr_vta_sin_iva_pesos", "costo_vta_pesos", "descuentos_pesos"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "((SUM(vr_vta_sin_iva_pesos) - SUM(costo_vta_pesos)) / NULLIF(SUM(vr_vta_sin_iva_pesos),0)) + (SUM(descuentos_pesos) / NULLIF(SUM(vr_vta_sin_iva_pesos),0))"
+    },
+    "format": {
+      "type": "percentage",
+      "decimals": 4
+    }
+},
+{
+    "kpi_id": "VentaProyectada",
+    "name": "VentaProyectada",
+    "description": "Proyección mensual equivalente a (('Valor subtotal local'/15)*31). Generalizado: (Venta acumulada / día del mes) * días del mes.",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["vr_vta_sin_iva_pesos", "fecha_dcto"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "(SUM(vr_vta_sin_iva_pesos) / NULLIF(DAY(MAX(fecha_dcto)),0)) * DAY(EOMONTH(MAX(fecha_dcto)))"
+    },
+    "format": { 
+      "type": "currency", 
+      "decimals": 0 }
+  },
+  {
+    "kpi_id": "Cump_ppto_proy",
+    "name": "Cumplimiento ppto_proyectado",
+    "description": "Vta Proyectada / Ppto_Venta. (Ppto_Venta se toma de T_ppto_venta.valor_ppto).",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["vr_vta_sin_iva_pesos", "fecha_dcto", "valor_ppto", "fecha", "id_co", "sk_geografia"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "((SUM(vr_vta_sin_iva_pesos) / NULLIF(DAY(MAX(fecha_dcto)),0)) * DAY(EOMONTH(MAX(fecha_dcto)))) / NULLIF(SUM(valor_ppto),0)"
+    },
+    "format": { 
+    "type": "percentage",
+    "decimals": 4 }
+  },
+  {
+    "kpi_id": "Dif_Venta_proyectada",
+    "name": "Diferencia de Venta_proyectada",
+    "description": "Vta Proyectada - Ppto_Venta. (Ppto_Venta se toma de T_ppto_venta.valor_ppto).",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["vr_vta_sin_iva_pesos", "fecha_dcto", "valor_ppto", "fecha", "id_co", "sk_geografia"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "((SUM(vr_vta_sin_iva_pesos) / NULLIF(DAY(MAX(fecha_dcto)),0)) * DAY(EOMONTH(MAX(fecha_dcto)))) - SUM(valor_ppto)"
+    },
+    "format": { 
+    "type": "currency",
+    "decimals": 0 }
+  },
+  {
+    "kpi_id": "Cump_ppto",
+    "name": "Cumplimiento del ppto",
+    "description": "Valor subtotal local / Ppto_Venta. (Ppto_Venta se toma de T_ppto_venta.valor_ppto).",
+    "frontend_inputs": {
+      "required": ["time_range", "company"],
+      "optional": ["dimensions", "filters"]
+    },
+    "dba_requirements": {
+      "dataset_mode": "AGGREGATED",
+      "required_columns": ["vr_vta_sin_iva_pesos", "fecha_dcto", "valor_ppto", "fecha", "id_co", "sk_geografia"]
+    },
+    "calculation": {
+      "type": "DERIVED",
+      "formula": "SUM(vr_vta_sin_iva_pesos) / NULLIF(SUM(valor_ppto),0)"
+    },
+    "format": { 
+    "type": "percentage",
+    "decimals": 4 }
   }
-
-
 
 ]
