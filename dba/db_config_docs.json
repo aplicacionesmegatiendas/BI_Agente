@@ -1406,5 +1406,321 @@
                 ]
             }
         ]
+
+    },
+    {
+        "data_mart_name": "Data mart de Inverntario",
+        "description": "Contiene información detallada sobre los movimientos de inventario, saldos de inventario por geografia, items, motivos y documentos.",
+        "tables": [
+            {
+                "table_name": "F_Saldos_Inv",
+                "description": " En esta tabla  se encuentran las cantidades de inventario al cierre de un periodo",
+                "cols": [
+                    {
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "codigo id de la compañia",
+                        "is_pk":true,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_geografia",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_geografia",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "um",
+                        "tipo": "char",
+                        "tamano": 4,
+                        "descripcion": "codigo unidad de medida",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_instalacion",
+                        "tipo": "char",
+                        "tamano": 5,
+                        "descripcion": "codigo de instalacion",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_bodega",
+                        "tipo": "char",
+                        "tamano": 5,
+                        "descripcion": "codigo de bodega",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "descripcion_bodega",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion nombre de bodega",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "cantidad",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "cantidad inventario, ejemplo:(gramo,minilitro, und)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "costo_uni_ins",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor costo unitario de la instalacion",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "costo_uni_prom",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor costo unitario promedio (de la bodega)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "costo_total_uni",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor costo unitario total",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_regional",
+                        "tipo": "char",
+                        "tamano": 2,
+                        "descripcion": "codigo erp de la regional",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "costo_total_prom",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor costo total promedio(de la bodega)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "fecha ult_conteo",
+                        "tipo": "char",
+                        "tamano": 50,
+                        "descripcion": "fecha del ultimo conteo",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "fecha_elt_entrada",
+                        "tipo": "char",
+                        "tamano": 50,
+                        "descripcion": "fecha de la ultima entrada",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "fecha_utl_compra",
+                        "tipo": "char",
+                        "tamano": 50,
+                        "descripcion": "fecha de la ultima compra",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "abc_rotacion_veces",
+                        "tipo": "char",
+                        "tamano": 1,
+                        "descripcion": "rotacion veces a,b,c",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
+            },
+            {
+                "table_name": "F_Mov_Inventario",
+                "description": " la fac transaccional de inventario se encuentras todo los movimientos de cada documento",
+                "cols": [
+                    {
+                        "campo": "sk_fecha_mov",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "fecha movimiento",
+                        "is_pk":true,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_geografia",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_geografia",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_tipo_documento",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_tipo_documento",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_geografia_origen",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_geografia para el centro de operación de origen del movimiento",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_tipo_documento_origen",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_tipo_documento para el documento de origen del movimiento",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_concepto",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo del concepto ",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_motivo",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_motivo",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "sk_item",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "codigo identificador tabla d_item",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "num_documento",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "consecutivo de documento ",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "num_docuemnto_origen",
+                        "tipo": "int",
+                        "tamano": null,
+                        "descripcion": "consecutivo de documento origen",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_instalacion",
+                        "tipo": "char",
+                        "tamano": 5,
+                        "descripcion": "codigo de instalacion ",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "descripcion_bodega",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion nombre de bodega",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_bodega_origen",
+                        "tipo": "char",
+                        "tamano": 5,
+                        "descripcion": "codigo de bodega origen",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "descripcion_bodega_origen",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion nombre de bodega de origen",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "compañía (1:invercomer,7:megaaceites)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "cantidad",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "cantidad de inventario",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "costo_unitario",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor costo unitario de la instalacion",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "costo_total",
+                        "tipo": "decimal",
+                        "tamano": "18,4",
+                        "descripcion": "valor costo unitario total",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "um",
+                        "tipo": "char",
+                        "tamano": 4,
+                        "descripcion": "codigo unidad de medida",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "rowid_oc_mvto",
+                        "tipo": "varchar",
+                        "tamano": 15,
+                        "descripcion": "Es la relacion que hay entre F_compras para obtener la trazabilidad de la OCM Y EAS",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "rowid_movto_req_int",
+                        "tipo": "varchar",
+                        "tamano": 15,
+                        "descripcion": "Es la relacion que hay entre F_solicitudes para obtener la trazabilidad de la RQS",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]
+            }
+        ]
+        
     }
 ]
