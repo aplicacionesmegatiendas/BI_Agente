@@ -189,6 +189,150 @@
     "format": { 
     "type": "percentage",
     "decimals": 4 }
+  },
+ {
+  "kpi_id": "Ventas",
+  "name": "Ventas",
+  "description": "Σ de todas las ventas POS en el periodo seleccionado (sin IVA por defecto).",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company"],
+    "optional": ["include_tax", "granularity", "dimensions", "filters"]
+  },
+
+  "dba_requirements": {
+    "dataset_mode": "AGGREGATED",
+    "required_tables": ["F_ventas"],
+    "required_columns": ["fecha_dcto", "id_cia", "origen", "vr_vta_sin_iva_pesos", "iva_pesos"]
+  },
+
+  "calculation": {
+    "type": "DERIVED",
+    "formula": "SUM(CASE WHEN origen = 'pos' THEN (CASE WHEN include_tax = true THEN (vr_vta_sin_iva_pesos + iva_pesos) ELSE vr_vta_sin_iva_pesos END) ELSE 0 END)"
+  },
+
+  "format": {
+    "type": "currency",
+    "decimals": 0
   }
+},
+{
+  "kpi_id": "Total_perdida",
+  "name": "Total perdida",
+  "description": "Σ de pérdidas (conocida + desconocida + administrativa) clasificadas desde D_motivos.perdida y medidas con costo_total en F_Mov_Inventario.",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company"],
+    "optional": ["granularity", "dimensions", "filters"]
+  },
+
+  "dba_requirements": {
+    "dataset_mode": "DETAIL",
+    "required_tables": ["F_Mov_Inventario", "D_motivos"],
+    "required_columns": ["sk_fecha_mov", "id_cia", "sk_motivo", "costo_total", "perdida"]
+  },
+
+  "calculation": {
+    "type": "DERIVED",
+    "formula": "ABS(SUM(CASE WHEN perdida IN ('PÉRDIDA CONOCIDA','PÉRDIDA DESCONOCIDA','PÉRDIDA ADMINISTRATIVA') THEN costo_total ELSE 0 END))"
+  },
+
+  "format": {
+    "type": "currency",
+    "decimals": 0
+  }
+},
+{
+  "kpi_id": "Total_perdida_por_codigo",
+  "name": "Total perdida (por código)",
+  "description": "Σ de pérdidas filtrando por id_perdida (más robusto que texto).",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company", "perdida_codes"],
+    "optional": ["granularity", "dimensions", "filters"]
+  },
+
+  "dba_requirements": {
+    "dataset_mode": "DETAIL",
+    "required_tables": ["F_Mov_Inventario", "D_motivos"],
+    "required_columns": ["sk_fecha_mov", "id_cia", "sk_motivo", "costo_total", "id_perdida"]
+  },
+
+  "calculation": {
+    "type": "DERIVED",
+    "formula": "ABS(SUM(CASE WHEN id_perdida IN (perdida_codes) THEN costo_total ELSE 0 END))"
+  },
+
+  "format": {
+    "type": "currency",
+    "decimals": 0
+  }
+},
+{
+  "kpi_id": "Pct_Indicador_Perdida",
+  "name": "% Indicador de perdida",
+  "description": "Total perdida / Ventas POS.",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company"],
+    "optional": ["include_tax", "granularity", "dimensions", "filters"]
+  },
+
+  "dependencies": ["Ventas", "Total_perdida"],
+
+  "calculation": {
+    "type": "DERIVED",
+    "formula": "CASE WHEN Ventas = 0 THEN 0 ELSE (Total_perdida / Ventas) END"
+  },
+
+  "format": {
+    "type": "percentage",
+    "decimals": 4
+  }
+},
+{
+  "kpi_id": "Objetivo_Perdida_Pct",
+  "name": "Objetivo % pérdida",
+  "description": "Objetivo de pérdida (%) tomado desde t_objetivos_inventarios.",
+
+  "frontend_inputs": {
+    "required": ["time_range", "company"],
+    "optional": ["dimensions", "filters"]
+  },
+
+  "dba_requirements": {
+    "dataset_mode": "AGGREGATED",
+    "required_tables": ["t_objetivos_inventarios"],
+    "required_columns": ["id_cia", "fecha", "id_negociador", "id_regional", "id_grupo_uen", "id_uen", "id_co", "objetivo %"]
+  },
+
+  "calculation": {
+    "type": "AVG",
+    "formula": "AVG([objetivo %])"
+  },
+
+  "format": {
+    "type": "percentage",
+    "decimals": 4
+  }
+},
+{
+  "kpi_id": "Cumplimiento",
+  "name": "Cumplimiento",
+  "description": "Retorna 1 si el % indicador de pérdida es menor que el objetivo; en caso contrario retorna 0.",
+
+  "dependencies": ["Pct_Indicador_Perdida", "Objetivo_Perdida_Pct"],
+
+  "calculation": {
+    "type": "DERIVED",
+    "formula": "CASE WHEN Pct_Indicador_Perdida < Objetivo_Perdida_Pct THEN 1 ELSE 0 END"
+  },
+
+  "format": {
+    "type": "number",
+    "decimals": 0
+  }
+}
+
 
 ]

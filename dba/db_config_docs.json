@@ -333,6 +333,22 @@
                         "descripcion": "compañía (1:invercomer,7:megaaceites)",
                         "is_pk":false,
                         "fk":""
+                    },
+                    {
+                        "campo": "id_perdida",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo de la perdida",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "perdida",
+                        "tipo": "varchar",
+                        "tamano": 40,
+                        "descripcion": "descripcion del tipo de perdida",
+                        "is_pk":false,
+                        "fk":""
                     }
                     
                 ]
@@ -1719,8 +1735,102 @@
                         "fk":""
                     }
                 ]
+            },
+            {
+                "table_name": "t_objetivos_inventarios",
+                "description": " En esta tabla se almacenan los objetivos de inventario por negociador de toda la compañia. ",
+                "cols": [
+                    {
+                        "campo": "id_negociador",
+                        "tipo": "varchar",
+                        "tamano": 10,
+                        "descripcion": "codigo negociador",
+                        "is_pk":true,
+                        "fk":""
+                    },
+                    {
+                        "campo": "año",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "Año del objetivo de inventario",
+                        "is_pk":null,
+                        "fk":""
+                    }
+                    ,{
+                        "campo": "id_regional",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo erp de la regional",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_grupo_uen",
+                        "tipo": "varchar",
+                        "tamano": 2,
+                        "descripcion": "codigo grupo uen ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_uen",
+                        "tipo": "char",
+                        "tamano": 10,
+                        "descripcion": "codigo uen ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "objetivo %",
+                        "tipo": "decimal",
+                        "tamano": "10,8",
+                        "descripcion": "codigo uen ",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_co",
+                        "tipo": "char",
+                        "tamano": 3,
+                        "descripcion": "codigo erp del centro de operación",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "fecha",
+                        "tipo": "date",
+                        "tamano": null,
+                        "descripcion": "fecha del objetivo de inventario",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "periodo",
+                        "tipo": "varchar",
+                        "tamano": 6,
+                        "descripcion": "el periodo que contempla es solo de año o mes",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "Objetivo en valor",
+                        "tipo": null,
+                        "tamano": null,
+                        "descripcion": "objetivo de perdida en valor",
+                        "is_pk":false,
+                        "fk":""
+                    },
+                    {
+                        "campo": "id_cia",
+                        "tipo": "smallint",
+                        "tamano": null,
+                        "descripcion": "compañía (1:invercomer,7:megaaceites)",
+                        "is_pk":false,
+                        "fk":""
+                    }
+                ]  
             }
-        ]
-        
-    }
+        ]      
+    }   
+
 ]
