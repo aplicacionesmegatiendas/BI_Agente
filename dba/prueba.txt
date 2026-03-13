@@ -1,0 +1,1 @@
+El agente DBA usa los estados MISSING_PARAMS, SERVICE_FAILURE y SQL_RESULT.

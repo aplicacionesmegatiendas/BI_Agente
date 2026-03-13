@@ -1,0 +1,16 @@
+/mcp
+  /server
+    mcp_server_spec.json
+  /tools
+    validate_report_request.json
+    build_sql_query.json
+    resolve_dimension_value.json
+  /resources
+    resources_manifest.json
+    kpis_resource_map.json
+    schema_resource_map.json
+    rules_resource_map.json
+  /prompts
+    build_kpi_report.json
+    clarify_missing_params.json
+    explain_metric.json

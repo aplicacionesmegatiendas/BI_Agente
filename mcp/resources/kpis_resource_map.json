@@ -1,0 +1,14 @@
+{
+  "catalog_uri": "resource://kpis/catalog",
+  "items": [
+    { "uri": "resource://kpis/Ventas", "kpi_id": "Ventas" },
+    { "uri": "resource://kpis/Margen_Retail", "kpi_id": "Margen_Retail" },
+    { "uri": "resource://kpis/Porc_Desc", "kpi_id": "Porc_Desc" },
+    { "uri": "resource://kpis/VentaProyectada", "kpi_id": "VentaProyectada" },
+    { "uri": "resource://kpis/Total_perdida", "kpi_id": "Total_perdida" },
+    { "uri": "resource://kpis/Total_perdida_por_codigo", "kpi_id": "Total_perdida_por_codigo" },
+    { "uri": "resource://kpis/Pct_Indicador_Perdida", "kpi_id": "Pct_Indicador_Perdida" },
+    { "uri": "resource://kpis/Objetivo_Perdida_Pct", "kpi_id": "Objetivo_Perdida_Pct" },
+    { "uri": "resource://kpis/Cumplimiento", "kpi_id": "Cumplimiento" }
+  ]
+}

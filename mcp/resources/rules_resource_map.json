@@ -1,0 +1,16 @@
+{
+  "catalog_uri": "resource://rules/datamart",
+  "rules": [
+    "GP_READ_ONLY",
+    "GP_STAR_SCHEMA",
+    "GP_KEYS_JOIN",
+    "GP_COMPANY_GOVERNANCE_FROM_GEOGRAFIA",
+    "CURRENCY_BASE_COP",
+    "FACT_GRAIN_F_VENTAS",
+    "JOIN_CONVENTION",
+    "DATE_HANDLINGs",
+    "NAMING_AND_ESCAPING",
+    "COLUMN_MASTERS_RELATIONSHIP",
+    "COMPANY_FILTER_FROM_GEOGRAFIA"
+  ]
+}

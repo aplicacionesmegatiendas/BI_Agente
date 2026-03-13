@@ -1,0 +1,120 @@
+{
+  "name": "build_sql_query",
+  "description": "Construye SQL de solo lectura para KPIs y datasets agregados o detalle, respetando reglas del datamart.",
+  "inputSchema": {
+    "type": "object",
+    "required": ["kpi_ids", "time_range"],
+    "properties": {
+      "kpi_ids": {
+        "type": "array",
+        "items": { "type": "string" },
+        "minItems": 1
+      },
+      "time_range": {
+        "type": "object",
+        "required": ["start", "end"],
+        "properties": {
+          "start": { "type": "string", "format": "date" },
+          "end": { "type": "string", "format": "date" }
+        }
+      },
+      "company": {
+        "type": "object",
+        "properties": {
+          "id_cia": { "type": "integer" }
+        }
+      },
+      "granularity": {
+        "type": "string",
+        "enum": ["day", "week", "month", "quarter", "year"]
+      },
+      "dimensions": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "filters": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["field", "operator", "value"],
+          "properties": {
+            "field": { "type": "string" },
+            "operator": {
+              "type": "string",
+              "enum": ["=", "!=", "IN", "NOT IN", ">", ">=", "<", "<=", "LIKE"]
+            },
+            "value": {}
+          }
+        }
+      },
+      "include_tax": { "type": "boolean" },
+      "dataset_mode": {
+        "type": "string",
+        "enum": ["DETAIL", "AGGREGATED"]
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": ["status"],
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["SQL_RESULT", "MISSING_PARAMS", "SERVICE_FAILURE", "INVALID_REQUEST"]
+      },
+      "sql": { "type": "string" },
+      "params": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["name", "type", "example"],
+          "properties": {
+            "name": { "type": "string" },
+            "type": {
+              "type": "string",
+              "enum": ["date", "datetime", "int", "decimal", "string"]
+            },
+            "example": { "type": "string" }
+          }
+        }
+      },
+      "columns": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["name", "type"],
+          "properties": {
+            "name": { "type": "string" },
+            "type": {
+              "type": "string",
+              "enum": ["date", "string", "int", "decimal", "float", "boolean"]
+            }
+          }
+        }
+      },
+      "mode": {
+        "type": "string",
+        "enum": ["DETAIL", "AGGREGATED"]
+      },
+      "grain": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "joins_used": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "rules_applied": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "notes": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "error_code": { "type": "string" },
+      "message": { "type": "string" },
+      "retryable": { "type": "boolean" }
+    }
+  }
+}

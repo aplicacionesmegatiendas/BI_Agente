@@ -1,0 +1,47 @@
+{
+  "server_name": "ventas-datamart-mcp",
+  "version": "0.1.0",
+  "description": "Servidor MCP para consultar KPIs, metadata y construir SQL seguro sobre el datamart de ventas e inventario.",
+  "source_documents": [
+    "../../protocolo_conversacional.json",
+    "../../db_config_docs.json",
+    "../../kpis_docs.json",
+    "../../reglas.json"
+  ],
+  "runtime": {
+    "database_engine": "SQL Server 2022",
+    "permissions": ["READ_ONLY"],
+    "allowed_operations": ["SELECT"]
+  },
+  "capabilities": {
+    "tools": [
+      "validate_report_request",
+      "build_sql_query",
+      "resolve_dimension_value"
+    ],
+    "resources": [
+      "resource://kpis/catalog",
+      "resource://schema/catalog",
+      "resource://rules/datamart"
+    ],
+    "prompts": [
+      "build_kpi_report",
+      "clarify_missing_params",
+      "explain_metric"
+    ]
+  },
+  "defaults": {
+    "company_id": 1,
+    "dataset_mode": "AGGREGATED",
+    "currency": "COP",
+    "date_column": "F_ventas.fecha_dcto",
+    "fact_table_sales": "F_ventas"
+  },
+  "governance": {
+    "company_filter_dimension": "D_Geografia",
+    "company_filter_join": "F_ventas.sk_geografia = D_Geografia.sk_geografia",
+    "join_strategy_default": "LEFT JOIN",
+    "surrogate_key_policy": "Join only on sk_*",
+    "time_policy": "Use F_ventas.fecha_dcto when no D_fecha exists"
+  }
+}

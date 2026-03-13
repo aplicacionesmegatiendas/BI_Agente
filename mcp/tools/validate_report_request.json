@@ -1,0 +1,99 @@
+{
+  "name": "validate_report_request",
+  "description": "Valida si una solicitud de reporte tiene todos los parámetros necesarios antes de construir SQL.",
+  "inputSchema": {
+    "type": "object",
+    "required": ["kpi_ids"],
+    "properties": {
+      "kpi_ids": {
+        "type": "array",
+        "items": { "type": "string" },
+        "minItems": 1
+      },
+      "time_range": {
+        "type": "object",
+        "properties": {
+          "start": { "type": "string", "format": "date" },
+          "end": { "type": "string", "format": "date" }
+        }
+      },
+      "company": {
+        "type": "object",
+        "properties": {
+          "id_cia": { "type": "integer" },
+          "label": { "type": "string" }
+        }
+      },
+      "granularity": {
+        "type": "string",
+        "enum": ["day", "week", "month", "quarter", "year"]
+      },
+      "dimensions": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "filters": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["field", "operator", "value"],
+          "properties": {
+            "field": { "type": "string" },
+            "operator": { "type": "string" },
+            "value": {}
+          }
+        }
+      },
+      "include_tax": { "type": "boolean" },
+      "dataset_mode": {
+        "type": "string",
+        "enum": ["DETAIL", "AGGREGATED"]
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": ["status"],
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["OK", "MISSING_PARAMS", "INVALID_REQUEST"]
+      },
+      "missing": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["name", "why"],
+          "properties": {
+            "name": { "type": "string" },
+            "why": { "type": "string" },
+            "example": { "type": "string" }
+          }
+        }
+      },
+      "questions": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "defaults_if_no_answer": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["name", "default", "risk"],
+          "properties": {
+            "name": { "type": "string" },
+            "default": {},
+            "risk": {
+              "type": "string",
+              "enum": ["LOW", "MEDIUM", "HIGH"]
+            }
+          }
+        }
+      },
+      "notes": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  }
+}

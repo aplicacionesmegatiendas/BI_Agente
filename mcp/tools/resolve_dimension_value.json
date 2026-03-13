@@ -1,0 +1,72 @@
+{
+  "name": "resolve_dimension_value",
+  "description": "Resuelve IDs de dimensiones y maestros implícitos cuando el usuario filtra por nombre descriptivo.",
+  "inputSchema": {
+    "type": "object",
+    "required": ["dimension_name", "search_text"],
+    "properties": {
+      "dimension_name": {
+        "type": "string",
+        "enum": [
+          "familia",
+          "subfamilia",
+          "categoria",
+          "seccion",
+          "uen",
+          "grupo_uen",
+          "marca",
+          "proveedor",
+          "negociador",
+          "departamento",
+          "regional",
+          "co",
+          "ciudad",
+          "perdida",
+          "id_perdida"
+        ]
+      },
+      "search_text": { "type": "string" },
+      "company": {
+        "type": "object",
+        "properties": {
+          "id_cia": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": ["status", "matches"],
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": ["OK", "AMBIGUOUS", "NOT_FOUND"]
+      },
+      "matches": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id_field": { "type": "string" },
+            "id_value": { "type": "string" },
+            "label_field": { "type": "string" },
+            "label_value": { "type": "string" },
+            "source_table": { "type": "string" }
+          }
+        }
+      },
+      "recommended_filter": {
+        "type": "object",
+        "properties": {
+          "field": { "type": "string" },
+          "operator": { "type": "string" },
+          "value": {}
+        }
+      },
+      "notes": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  }
+}

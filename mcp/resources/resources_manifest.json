@@ -1,0 +1,22 @@
+{
+  "resources": [
+    {
+      "uri": "resource://kpis/catalog",
+      "type": "json",
+      "source_file": "../../kpis_docs.json",
+      "description": "Catálogo completo de KPIs, inputs, dependencias y fórmulas."
+    },
+    {
+      "uri": "resource://schema/catalog",
+      "type": "json",
+      "source_file": "../../db_config_docs.json",
+      "description": "Metadata de tablas, columnas, grain, business keys y relaciones del datamart."
+    },
+    {
+      "uri": "resource://rules/datamart",
+      "type": "json",
+      "source_file": "../../reglas.json",
+      "description": "Reglas de gobernanza, joins, fechas, moneda y filtros."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "catalog_uri": "resource://schema/catalog",
+  "items": [
+    { "uri": "resource://schema/F_ventas", "table_name": "F_ventas" },
+    { "uri": "resource://schema/D_Geografia", "table_name": "D_Geografia" },
+    { "uri": "resource://schema/D_Item", "table_name": "D_Item" },
+    { "uri": "resource://schema/D_motivos", "table_name": "D_motivos" },
+    { "uri": "resource://schema/D_canal", "table_name": "D_canal" },
+    { "uri": "resource://schema/D_moneda", "table_name": "D_moneda" },
+    { "uri": "resource://schema/T_ppto_venta", "table_name": "T_ppto_venta" },
+    { "uri": "resource://schema/F_Mov_Inventario", "table_name": "F_Mov_Inventario" },
+    { "uri": "resource://schema/t_objetivos_inventarios", "table_name": "t_objetivos_inventarios" }
+  ]
+}
